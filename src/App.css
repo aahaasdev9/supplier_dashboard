@@ -1,38 +1,363 @@
-.App {
-  text-align: center;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.chat_info_icon2 {
+  position: absolute;
+  right: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.chat_send_icon {
+  padding-left: 10px;
+}
+
+.chat_text_area_heading {
+  padding-left: 25px;
+  padding-top: 10px;
+}
+
+.message_area {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  position: absolute;
+  bottom: 0px;
+}
+
+.message {
+  border: 1px solid black;
+  outline: 0;
+  padding: 10px;
+  font-size: 15px;
+  caret-color: red;
+  width: 70%;
+  margin-right: 10px;
+  text-transform: capitalize;
+}
+
+.send_button {
+  padding: 10px;
+  border: 0;
+  width: 20%;
+  outline: 0;
+  background-color: blue;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+
+.chats_content {
+  text-transform: capitalize;
+  height: 70%;
+  margin: 0 10px;
+  overflow-y: scroll;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.chat_msg {
+  display: grid;
+}
+
+.chatmsgs {
+  width: fit-content;
+}
+
+.chat-bubble {
+  padding: 0 20px;
+  height: 40px;
+}
+
+.chat-bubble.right {
+  margin-left: auto;
+}
+
+.chat-bubble.chat-bubble.right p,
+.chat-bubble.chat-bubble.left p {
+  text-align: left;
+}
+
+.time {
+  padding-top: 5px;
+}
+
+.chat-bubble.chat-bubble.left .time {
+  float: left;
+}
+
+.chat-bubble .time {
+  color: red;
+  position: relative;
+  top: -20px;
+  text-transform: capitalize;
+  font-size: 10px;
+  float: right;
+}
+
+.chat-bubble.left {
+  width: fit-content;
+  object-fit: cover;
+}
+
+.suggestions_message {
+  margin-top: 10px;
+  display: flex;
+  overflow: scroll;
+  justify-content: space-around;
+}
+
+.suggestions_message p {
+  color: white;
+  background-color: gray;
+  padding: 5px 10px;
+  margin: 0 10px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.SuppplierLogo {
+  width: 10px;
+}
+
+
+.search_icon {
+  font-size: 20px
+}
+
+.add_vendor_icon {
+  grid-area: vendor;
+  background-color: gray;
+  padding: 15px;
+  color: white;
+  border-radius: 10px;
+}
+
+.add_vendor_icon:hover {
+  cursor: pointer;
+}
+
+.settings_icon {
+  grid-area: settings;
+  background-color: gray;
+  padding: 15px;
+  color: white;
+  border-radius: 10px;
+}
+
+.search_box {
+  padding: 5px 0;
+  background-color: lightgray;
+  margin: 10px auto;
+  border-radius: 15px;
+}
+
+.search_box input {
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  color: white;
+}
+
+.search_box input::placeholder {
+  color: white;
+}
+
+.customer_head {
+  height: 90vh;
+  overflow: scroll;
+}
+
+.customer_details:hover {
+  background-color: lightgray;
+}
+
+
+.customer_details {
+  margin: 10px;
+  display: grid;
+  grid-template-areas:
+    'userimage username suppliername'
+    'userimage usermessage usertime'
+  ;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.suppliername{
+  grid-area: suppliername;
+  font-weight: 600;
+}
+
+.sign-out {
+  position: absolute;
+  top: 34px;
+  right: 190px;
+  border: 0;
+  border-radius: 10px;
+  background-color: gray;
+  color: white;
+  padding: 10px;
+}
+
+.user_image {
+  margin: auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  grid-area: userimage;
+}
+
+.user_name {
+  grid-area: username;
+  padding-left: 10px;
+  font-weight: 600;
+}
+
+.user_last_msg {
+  grid-area: usermessage;
+  padding-left: 10px;
+}
+
+.last_time {
+  grid-area: usertime;
+}
+
+.main_content {
+  width: 98%;
+  height: 98%;
+  margin: 1%;
+}
+
+.main_customer_head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1.8fr 0.6fr 0.6fr;
+  grid-template-areas:
+    "user_image_main user_name_main user_name_main . . . vendor settings"
+    "user_image_main user_last_seen_main user_last_seen_main  . . . vendor settings";
+  align-items: center;
+}
+
+.user_image_main {
+  margin: 10px;
+  grid-area: user_image_main;
+}
+
+.user_name_main {
+  font-weight: 600;
+  grid-area: user_name_main;
+  margin-top: 10px;
+}
+
+.user_last_seen_main {
+  grid-area: user_last_seen_main;
+}
+
+.chat_msg_update {
+  height: 75vh;
+  overflow: scroll;
+}
+
+.message_send_content {
+  border-radius: 10px;
+  border: solid #BDBDBD 3px;
+  box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 5px 5px 22px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 5px 22px rgba(0, 0, 0, 0.5);
+}
+
+.message_send_content input {
+  border: 0;
+  border-radius: 10px;
+  outline: 0;
+  font-size: 20px;
+  padding: 15px;
+  padding-left: 30px;
+}
+
+.chat_bubble_main {
+  padding: 0 20px;
+}
+
+.chat_time {
+  margin-top: -10px;
+  font-size: 10px;
+}
+
+.chat_bubble_main.right_side .chat_time {
+  margin-left: auto;
+}
+
+.send_icon_main {
+  border: 0;
+  background-color: transparent;
+}
+
+.chat_bubble_main.left_side {
+  background-color: lightgray;
+  font-size: 20px;
+  text-transform: capitalize;
+  border-radius: 10px 0 10px 10px;
+  display: grid;
+  place-content: center;
+  width: fit-content;
+  padding: 10px 20px;
+}
+
+.chat_bubble_main.right_side {
+  background-color: rgb(93, 214, 93);
+  font-size: 20px;
+  padding: 10px 20px;
+  margin-left: auto;
+  text-transform: capitalize;
+  color: white;
+  border-radius: 0 10px 10px 10px;
+  display: grid;
+  place-content: center;
+}
+
+.search_main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.search_results {
+  list-style: none;
+  padding: 10px;
+  margin: 5px 10px;
+  background-color: lightblue;
+  color: white;
+  border-radius: 10px;
+}
+
+.go_up_button {
+  padding: 10px;
+  width: fit-content;
+  margin-left: auto;
+  font-size: 40px;
+  position: absolute;
+  right: 10px;
+  bottom: 80px;
 }
