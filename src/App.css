@@ -12,6 +12,11 @@ code {
     monospace;
 }
 
+.admin_logo{
+  width: 50px;
+  mix-blend-mode: multiply;
+}
+
 .chat_info_icon2 {
   position: absolute;
   right: 20px;
@@ -78,9 +83,6 @@ code {
   background: #555;
 }
 
-.chat_msg {
-  display: grid;
-}
 
 .chatmsgs {
   width: fit-content;
@@ -148,7 +150,15 @@ code {
 }
 
 .add_vendor_icon {
-  grid-area: vendor;
+  grid-area: add_vendor;
+  background-color: gray;
+  padding: 15px;
+  color: white;
+  border-radius: 10px;
+}
+
+.close_vendor_icon {
+  grid-area: remove_vendor;
   background-color: gray;
   padding: 15px;
   color: white;
@@ -172,54 +182,34 @@ code {
   background-color: lightgray;
   margin: 10px auto;
   border-radius: 15px;
+  padding-left: 10px;
 }
 
 .search_box input {
   border: 0;
   outline: 0;
   background-color: transparent;
-  color: white;
-}
-
-.search_box input::placeholder {
-  color: white;
 }
 
 .customer_head {
-  height: 90vh;
-  overflow: scroll;
+  height: 80vh; 
+  overflow-y: scroll;
 }
 
-.customer_details:hover {
-  background-color: lightgray;
-}
 
 
 .customer_details {
   margin: 10px;
   display: grid;
   grid-template-areas:
-    'userimage username suppliername'
-    'userimage usermessage usertime'
-  ;
-  border-radius: 20px;
-  padding: 5px;
-}
-
-.suppliername{
-  grid-area: suppliername;
-  font-weight: 600;
-}
-
-.sign-out {
-  position: absolute;
-  top: 34px;
-  right: 190px;
-  border: 0;
-  border-radius: 10px;
-  background-color: gray;
-  color: white;
+    'userimage username usertime'
+    'userimage userlastmsg  userlastmsg ';
+  border-radius: 5px;
   padding: 10px;
+}
+
+.customer_details:hover {
+  background-color: lightgray;
 }
 
 .user_image {
@@ -234,30 +224,51 @@ code {
   grid-area: username;
   padding-left: 10px;
   font-weight: 600;
+  width: 300px;
 }
 
 .user_last_msg {
-  grid-area: usermessage;
+  grid-area: userlastmsg;
   padding-left: 10px;
+  white-space: nowrap;
+  width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .last_time {
   grid-area: usertime;
 }
 
-.main_content {
-  width: 98%;
-  height: 98%;
-  margin: 1%;
+.filter_buttons {
+  background-color: lightgreen;
+  color: darkslategrey;
+  text-transform: capitalize;
+  margin: 0 0 0 20px;
+  overflow-y: scroll;
+}
+
+.filter_buttons:hover{
+  border: 1px solid lightgreen;
 }
 
 .main_customer_head {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1.8fr 0.6fr 0.6fr;
+  grid-template-columns: 1fr 9fr 1fr 1fr 1fr 2fr;
   grid-template-areas:
-    "user_image_main user_name_main user_name_main . . . vendor settings"
-    "user_image_main user_last_seen_main user_last_seen_main  . . . vendor settings";
+    "user_image_main user_name_main   add_vendor remove_vendor  settings sign_in_sign_out"
+    "user_image_main  user_last_seen_main  add_vendor remove_vendor settings sign_in_sign_out ";
   align-items: center;
+}
+
+.sign_out_button {
+  border: 0;
+  border-radius: 10px;
+  background-color: red;
+  color: white;
+  padding: 10px;
+  grid-area: sign_in_sign_out;
+  margin-right: 10px;
 }
 
 .user_image_main {
@@ -276,16 +287,15 @@ code {
 }
 
 .chat_msg_update {
-  height: 75vh;
+  display: grid;
+  height: 77vh;
   overflow: scroll;
 }
 
 .message_send_content {
   border-radius: 10px;
   border: solid #BDBDBD 3px;
-  box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 5px 5px 22px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 5px 5px 22px rgba(0, 0, 0, 0.5);
+  margin: 0 10px;
 }
 
 .message_send_content input {
@@ -294,11 +304,6 @@ code {
   outline: 0;
   font-size: 20px;
   padding: 15px;
-  padding-left: 30px;
-}
-
-.chat_bubble_main {
-  padding: 0 20px;
 }
 
 .chat_time {
@@ -306,36 +311,44 @@ code {
   font-size: 10px;
 }
 
-.chat_bubble_main.right_side .chat_time {
-  margin-left: auto;
-}
+
 
 .send_icon_main {
   border: 0;
   background-color: transparent;
 }
 
+.chat_bubble_main {
+  font-size: 15px;
+  text-transform: capitalize;
+  padding: 10px 20px;
+  place-content: center;
+  display: grid;
+  font-weight: 400;
+}
+
 .chat_bubble_main.left_side {
   background-color: lightgray;
-  font-size: 20px;
-  text-transform: capitalize;
+  margin: 0 0 10px 10px;
   border-radius: 10px 0 10px 10px;
-  display: grid;
-  place-content: center;
-  width: fit-content;
-  padding: 10px 20px;
+  margin-right: auto;
 }
 
 .chat_bubble_main.right_side {
-  background-color: rgb(93, 214, 93);
-  font-size: 20px;
-  padding: 10px 20px;
+  background-color: rgb(162, 246, 162);
+  margin: 0 10px 10px 0;
   margin-left: auto;
-  text-transform: capitalize;
-  color: white;
+  /* color: white; */
   border-radius: 0 10px 10px 10px;
-  display: grid;
-  place-content: center;
+}
+
+.chat_bubble_main.right_side .chat_time {
+  margin-left: auto;
+}
+
+.chat_context span {
+  font-size: 15px;
+  color: red;
 }
 
 .search_main {
@@ -352,7 +365,7 @@ code {
   border-radius: 10px;
 }
 
-.go_up_button {
+.go_down_button {
   padding: 10px;
   width: fit-content;
   margin-left: auto;
@@ -360,4 +373,8 @@ code {
   position: absolute;
   right: 10px;
   bottom: 80px;
+}
+
+.remove_pop_up {
+  padding: 10px;
 }
