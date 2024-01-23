@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import 'firebase/analytics';
 import { db, auth } from '../firebase';
 import { addDoc, collection, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
@@ -6,44 +6,24 @@ import { faPaperPlane, faMagnifyingGlass, faGear, faAngleDown } from '@fortaweso
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import axios, { all } from 'axios';
 
 function ChatBox() {
 
-  // sample data base
-  // need to develope
-
-  const [customer_message_collections, set_customer_message_collections] = useState([
-    {
-      'customer_collection_id': '7XqULuARo2NWrO89DnV9IVGsZ2Q2',
-      'supplier_id': 'XIidzTBzhaWAtUoRlTMUvvEnDlz1',
-      'supplier_name': 'apple',
-      'group_chat': 'true',
-      'customer_name': 'veeramanikandan'
-    }
-  ]);
-
-
-
-  // updating user messaged based on customer id
+  const [customer_message_collections, set_customer_message_collections] = useState([]);
   const [messages, setMessages] = useState([]);
-  // updating 
   const [userID, setUSerID] = useState('');
   const [userMessage, setUserMessage] = useState('');
   const [cusData, setData] = useState([]);
-
-
   const [user] = useAuthState(auth)
 
   const sendMessage = async (event) => {
-
+    const adminUID = user.uid;
     event.preventDefault();
-
     if (userMessage.trim() === "") {
       alert("Enter valid message");
       return;
     }
-
-    const adminUID = 'COKqIP4R5mMGRMaD4YjF97Lgw2i2';
     const { displayName, photoURL } = auth.currentUser;
     await addDoc(collection(db, "chats/chats_dats/" + userID), {
       text: userMessage,
@@ -52,28 +32,15 @@ function ChatBox() {
       createdAt: serverTimestamp(),
       adminUID,
     });
-
     setUserMessage("");
-
   }
 
-  console.log(user.uid);
-
-
-
-
-
-
-
   const getUserMessages = (value) => {
-
     const q = query(
       collection(db, "chats/chats_dats/" + value),
       orderBy("createdAt", "desc"),
       limit(50)
     );
-
-
     const getMessages = onSnapshot(q, (QuerySnapshot) => {
       const fetchedMessages = [];
       QuerySnapshot.forEach((doc) => {
@@ -84,50 +51,9 @@ function ChatBox() {
       );
       setMessages(sortedMessages);
       setUSerID(value)
-
     });
-
     return getMessages;
-
   }
-
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-
-
-        const data_promise = customer_message_collections.map(async (value, key) => {
-          // need to develoe this 
-          // need to validate supplier id instead of static id
-          if (value.supplier_id === 'XIidzTBzhaWAtUoRlTMUvvEnDlz1') {
-            const q = query(
-              collection(db, "chats/chats_dats/" + value.customer_collection_id),
-              orderBy("createdAt", "desc"),
-              limit(50)
-            );
-            const querySnapshot = await getDocs(q);
-            const fetchedMessages = [];
-            querySnapshot.forEach((doc) => {
-              fetchedMessages.push({ ...doc.data(), id: doc.id });
-            });
-            const sortedMessages = fetchedMessages.sort(
-              (a, b) => a.createdAt - b.createdAt
-            );
-            return { customerId: value, sortedMessages };
-          } else {
-            return null
-          }
-        })
-        const allData = await Promise.all(data_promise);
-        setData(allData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const getTime = (value, type) => {
     if (value?.seconds !== undefined && value?.nanoseconds !== undefined) {
@@ -152,8 +78,51 @@ function ChatBox() {
     auth.signOut();
   };
 
+  const fetchData = async (paraData) => {
+    try {
+      const data_promise = paraData.map(async (value, key) => {
+        // if (value.supplier_id === 'XIidzTBzhaWAtUoRlTMUvvEnDlz1') {
+        const q = query(
+          collection(db, "chats/chats_dats/" + value.customer_collection_id),
+          orderBy("createdAt", "desc"),
+          limit(50)
+        );
+        const querySnapshot = await getDocs(q);
+        const fetchedMessages = [];
+        querySnapshot.forEach((doc) => {
+          fetchedMessages.push({ ...doc.data(), id: doc.id });
+        });
+        const sortedMessages = fetchedMessages.sort(
+          (a, b) => a.createdAt - b.createdAt
+        );
+        return { customerId: value, sortedMessages };
+        // } else {
+        // return null
+        // }
+      })
+      setData([''])
+      const allData = await Promise.all(data_promise);
+      setData(allData);
+      console.log('data updateed...');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
 
 
+
+  useEffect(() => {
+    // const getChatdata = async () => {
+    try {
+      axios.get(`/chats/${user.uid}`).then(res => {
+        set_customer_message_collections(res.data.data)
+        fetchData(res.data.data)
+      })
+    } catch (error) {
+      console.log(error);
+    }
+    // }
+  }, [])
 
   return (
     <div className="d-flex">
@@ -164,12 +133,15 @@ function ChatBox() {
         </div>
         <div className="customer_head">
           {
+            console.log(cusData)
+          }
+          {
             cusData.map((value, key) => (
-              value &&
+              value?.sortedMessages?.length >= 1 &&
               <div className="customer_details" key={key} onClick={() => getUserMessages(value.customerId.customer_collection_id)}              >
-                <img className="user_image" src={value.sortedMessages[0].avatar} alt={value} />
-                <p className='user_name'>{value.sortedMessages[0].name}</p>
-                <p className='user_last_msg'>{value.sortedMessages[value.sortedMessages.length - 1].text}</p>
+                <img className="user_image" src={value?.sortedMessages[0].avatar} alt={value} />
+                <p className='user_name'>{value?.sortedMessages[0].name}</p>
+                <p className='user_last_msg'>{value?.sortedMessages[value.sortedMessages.length - 1].text}</p>
                 <p className='last_time'>{getTime(value?.sortedMessages[value?.sortedMessages?.length - 1].createdAt, "value1")}</p>
               </div>
             ))
@@ -178,7 +150,7 @@ function ChatBox() {
       </div>
       <div className="col-8 border customer_names">
         {
-          messages.length > 1 &&
+          messages.length >= 1 &&
 
           <div className="main_content">
             <div className="main_customer_head">
@@ -204,9 +176,6 @@ function ChatBox() {
             <div className="chat_msg chat_msg_update">
               {
                 messages.map((value, key) => {
-                  {
-                    console.log(value)
-                  }
                   return (
                     <div className={`${value.adminUID === user.uid ? "chat_bubble_main right_side" : "chat_bubble_main left_side"} `} key={key}>
                       <p className="chat_context">{value.text} : <span>({value.name || value.uid})</span> </p>
